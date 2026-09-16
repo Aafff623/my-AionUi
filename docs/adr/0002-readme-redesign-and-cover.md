@@ -14,7 +14,7 @@
 1. **修订 ADR-0001 边界**: `readme.md` 由「不改」转为「fork 重写」。上游原版仍完整存在于 git 历史与 upstream 仓库，多语言产品介绍保留于 `docs/readme/` 并在页脚链接。其余上游文件（`AGENTS.md`、`CLAUDE.md`、`.gitignore`、`.claude/` 等）维持「不改」不变。
 2. **内容架构**: 按规范默认序列 Hero（名字 + 一句话价值）→ 证据（真实对比表 + 能力清单）→ 机制（架构图）→ 上手 → Fork 说明 → License；能力描述只取上游 README 既有功能与已验证架构事实，不编造。
 3. **视觉系统**: 走规范的 Monochrome technical direction——源自项目真实识别（logo 为纯黑白）：墨黑 `#0A0C0E` / 暖白 `#F2F4F6` / 灰 `#9AA7B2`，单一品牌强调色取上游徽章绿 `#32CD32`；母题为「多 Agent 汇入一个工作台」；全部 SVG 自带深色背景保证双主题可读，1200 viewBox，系统字体。
-4. **视觉资产**: `assets/readme/` 下 4 个章节标题 SVG（1200×140）+ 1 张架构系统图 SVG（1200×380）；cover 为 AI 生成位图 `cover.png`（oil-cover 风格：真实屏幕证据 + Apple-like 视觉 + 清晰标题 + 无人物 + 柔和 pastel 氛围层），生成需求单存 `assets/readme/source/cover-prompt.txt`。SVG 保持纯确定性，不嵌位图。
+4. **视觉资产**: `assets/readme/` 下 4 个章节标题 SVG（1200×140）+ 1 张架构系统图 SVG（1200×380）。**正式 cover（定稿）**：所有者依据本仓需求单在 ChatGPT 生成、亲自选定的 fork 专属横幅（1672×941，AionUi 字标 + my-AionUi chip + personal fork · v2.2.2 标注），落位 `assets/readme/cover.png`；生成需求单已完成使命并删除。SVG 保持纯确定性，不嵌位图。
 5. **语言**: fork 首页以中文为主（所有者工作语言），产品术语保留英文；上游 9 语言翻译文档保留原位。
 
 ## 后果
