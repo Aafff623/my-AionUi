@@ -16,7 +16,7 @@
 
 <p align="center">
   <strong>给 20+ AI CLI Agent 的统一图形工作台</strong>——本地运行、多 Agent 并行、24/7 定时自动化、IM 远程接入。<br>
-  <sub>本仓库是 <a href="https://github.com/iOfficeAI/AionUi">iOfficeAI/AionUi</a> 的个人二创 fork：承载自有改动、跟随上游演进。安装包与完整产品介绍见<a href="https://github.com/iOfficeAI/AionUi#readme">上游仓库</a>。</sub>
+  <sub>本仓库是 <a href="https://github.com/iOfficeAI/AionUi">iOfficeAI/AionUi</a> 的个人二创 fork：承载自有改动、跟随上游演进。Windows 安装包见<a href="https://github.com/Aafff623/my-AionUi/releases">本仓库 Releases</a>，完整产品介绍见<a href="https://github.com/iOfficeAI/AionUi#readme">上游仓库</a>。</sub>
 </p>
 
 <p align="center">
@@ -79,13 +79,10 @@ AionUi 是**瘦客户端**：本仓库提供桌面 / WebUI / CLI 三种界面，
   <img src="./assets/readme/section-start.svg" width="100%" alt="03 快速上手——直接安装或从源码构建">
 </p>
 
-**直接使用（推荐）** — 本 fork 不发布安装包，从上游获取：
+**直接使用（推荐）**：
 
-```bash
-brew install aionui        # macOS
-```
-
-或到[上游 Releases](https://github.com/iOfficeAI/AionUi/releases) 下载 Windows / macOS / Linux 安装包。
+- **Windows**：到[本仓库 Releases](https://github.com/Aafff623/my-AionUi/releases) 下载安装包（`threetwoa-2.2.2-win-x64.exe`；未签名，首次安装时 SmartScreen 可能提示）
+- **macOS / Linux**：本仓库暂未提供安装包，可到[上游 Releases](https://github.com/iOfficeAI/AionUi/releases) 下载，或 `brew install aionui`
 
 **源码开发** — 前置：Node 22–24、Bun、Rust 工具链（aioncore 需本地构建）：
 

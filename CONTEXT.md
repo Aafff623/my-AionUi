@@ -30,14 +30,12 @@
 
 ## CI 与出包（fork 实测路径）
 
-- fork 的 Actions 可调度（2026-09-16 首次实跑）。仓库当前**无任何 secrets / 仓库变量**。
-- **实测①（冒烟构建，run 35056715581）**：`build-manual` windows-x64 + `skip_code_quality` → **成功**，产物 `windows-build-x64-c3a40da`（170MB NSIS 安装器，Actions artifact 保留 7 天），全程约 9 分钟，零 secrets——fork 打包链（含 rebrand 后的产物名）可用。
-- **实测②（质量门，run 35057357104）**：`format:check` 曾失败于 `docs/adr/0003`（`*` 未转义，已修并经 oxfmt@0.41.0 全仓复验 0 违规）；ESLint 仅 warning 不失败；tsc/vitest 因前置失败未执行——本机依赖修复后 `tsc --noEmit` **0 错**，预期 CI 可通过（待 push 后复验）。
-- **发布总开关 `vars.PUBLISH_RELEASE`**（`.github/workflows/build-and-release.yml`）：未设置时 tag 推送只生成**纯源码 draft release**、跳过构建；设为 `true` 才启用六平台构建并发布带安装包的 release（upstream 为"下游签名构建"预留的开关）。
-- **手动出包入口**：`build-manual.yml`（workflow_dispatch，绕开 PUBLISH_RELEASE 开关，可 `skip_code_quality`）；产物只上传安装器到 Actions artifacts，**不含 `latest*.yml`**、不动 Releases。
-- **构建脚本永远 `--publish=never`**（`scripts/build-with-builder.js:785`）：electron-builder 不会隐式发布；Release 与 `latest*.yml` 由 `build-and-release` 的 release job（download-artifact + `scripts/prepare-release-assets.sh` + action-gh-release）生成，channel 清单 version 取 package.json（版本规则见 ADR-0004）。
-- **secrets 依赖**：linux-x64 构建硬校验 `SENTRY_AUTH_TOKEN/SENTRY_ORG/SENTRY_PROJECT`（缺失即失败）；macOS 无证书时降级 unsigned 构建；`GH_TOKEN`(PAT) 缺省回退 `GITHUB_TOKEN`。Windows / macOS 可零 secrets 出**未签名**包。
-- ⚠️ 当前 release（v2.2.2-fork.1）为纯源码、无 channel 文件 → **更新检查链路暂时 404**（方向安全、功能不可用）；首次带产物 release 上线即闭环。
+- ⚠️ **push / tag 推送不触发任何 workflow**（2026-09-16 实测：推 `v2.2.2-fork.2` tag 后零 run；Actions 页无 fork 禁用横幅、workflow 均 active、`gh workflow enable` 无效）——**出包目前只能走 `build-manual.yml` 手动派发**（workflow_dispatch 正常）。tag 自动发布链待排查（怀疑与本机推送凭据/事件投递有关）。
+- **已验证的出包路径（Windows）**：`build-manual.yml`（`include_update_metadata=true`）→ 下载 artifacts → `gh release create` 手工挂载。首个产物版本 **v2.2.2-fork.2**：`threetwoa-2.2.2-win-x64.exe`（未签名）+ `latest.yml`；更新通道 URL（`releases/latest/download/latest.yml`）实测 **200，闭环**；质量门在该 run 中 CI 全绿（含 tsc/vitest，ubuntu）。
+- **上游设计的自动链**（`build-and-release.yml`，tag 触发）：仓库变量 `PUBLISH_RELEASE=true` 已设置；因触发问题未走通。恢复后六平台构建 + release job（softprops）自动创建 release。
+- **构建脚本永远 `--publish=never`**（`scripts/build-with-builder.js:785`）：electron-builder 不会隐式发布；产物要么走 `build-and-release` 的 release job，要么手工 `gh release create`。
+- **secrets 依赖**：仓库当前无任何 secrets；linux-x64 有 Sentry 守卫（无 token 自动跳过，不再硬失败）；macOS 无证书降级 unsigned；零 secrets 下 Windows 已验证可出包。
+- 版本规则见 ADR-0004：**已分发版本 = 2.2.2**（首个安装包），下一次含产物的发布需 bump 普通版本（如 2.2.3）。
 
 ## 常用命令
 
