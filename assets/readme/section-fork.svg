@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="140" viewBox="0 0 1200 140" role="img" aria-labelledby="t d">
+  <title id="t">04 关于这个 Fork</title>
+  <desc id="d">章节标题：本仓库与上游 iOfficeAI/AionUi 的关系、同步策略和治理资产。</desc>
+  <rect width="1200" height="140" rx="16" fill="#0A0C0E"/>
+  <g transform="translate(64 0)">
+    <text x="0" y="62" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="26" fill="#32CD32">04</text>
+    <text x="60" y="68" font-family="-apple-system,'PingFang SC','Segoe UI','Microsoft YaHei',sans-serif" font-size="46" font-weight="700" fill="#F2F4F6">关于这个 Fork</text>
+    <text x="392" y="65" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="19" letter-spacing="4" fill="#9AA7B2">ABOUT THIS FORK</text>
+    <rect x="0" y="98" width="132" height="2" fill="#32CD32" opacity="0.75"/>
+  </g>
+  <g transform="translate(1046 70)" stroke="#32CD32" stroke-width="1.5" fill="none" opacity="0.9">
+    <circle cx="0" cy="-22" r="5"/>
+    <circle cx="0" cy="0" r="5"/>
+    <circle cx="0" cy="22" r="5"/>
+    <path d="M6 -22 C 30 -22 28 0 42 0 M6 22 C 30 22 28 0 42 0 M6 0 H42"/>
+    <rect x="44" y="-15" width="38" height="30" rx="7" fill="#14181C"/>
+  </g>
+</svg>

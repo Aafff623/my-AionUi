@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="380" viewBox="0 0 1200 380" role="img" aria-labelledby="t d">
+  <title id="t">AionUi 架构：三种界面上游汇聚到 aioncore 后端</title>
+  <desc id="d">系统图：桌面端、WebUI 服务端和 aionui-web CLI 三种界面通过 REST 与 WebSocket 连接到 aioncore（Rust 后端）；后端向外提供 CLI Agent、IM 远程接入、定时任务与数据存储能力。</desc>
+  <rect width="1200" height="380" rx="16" fill="#0A0C0E"/>
+
+  <g id="clients">
+    <g transform="translate(64 48)">
+      <rect width="252" height="72" rx="10" fill="#14181C" stroke="#242C34" stroke-width="1.5"/>
+      <text x="20" y="31" font-family="-apple-system,'PingFang SC','Segoe UI','Microsoft YaHei',sans-serif" font-size="22" font-weight="700" fill="#F2F4F6">桌面端</text>
+      <text x="20" y="56" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#9AA7B2">Electron · React 19</text>
+    </g>
+    <g transform="translate(64 144)">
+      <rect width="252" height="72" rx="10" fill="#14181C" stroke="#242C34" stroke-width="1.5"/>
+      <text x="20" y="31" font-family="-apple-system,'PingFang SC','Segoe UI','Microsoft YaHei',sans-serif" font-size="22" font-weight="700" fill="#F2F4F6">WebUI 服务端</text>
+      <text x="20" y="56" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#9AA7B2">web-host · 反代 /api</text>
+    </g>
+    <g transform="translate(64 240)">
+      <rect width="252" height="72" rx="10" fill="#14181C" stroke="#242C34" stroke-width="1.5"/>
+      <text x="20" y="31" font-family="-apple-system,'PingFang SC','Segoe UI','Microsoft YaHei',sans-serif" font-size="22" font-weight="700" fill="#F2F4F6">aionui-web CLI</text>
+      <text x="20" y="56" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#9AA7B2">无 Electron 宿主</text>
+    </g>
+  </g>
+
+  <g id="links-in" stroke="#9AA7B2" stroke-width="1.5" fill="none" opacity="0.5">
+    <path d="M316 84 C 392 84 396 180 466 180"/>
+    <path d="M316 180 H 466"/>
+    <path d="M316 276 C 392 276 396 180 466 180"/>
+  </g>
+  <path d="M458 174 L 470 180 L 458 186" fill="none" stroke="#32CD32" stroke-width="1.5" opacity="0.9"/>
+  <text x="338" y="160" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#32CD32">REST + WebSocket</text>
+  <text x="338" y="208" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#9AA7B2">127.0.0.1:13400</text>
+
+  <g id="backend">
+    <rect x="472" y="108" width="272" height="144" rx="14" fill="#0F1519" stroke="#32CD32" stroke-width="1.5" stroke-opacity="0.4"/>
+    <text x="500" y="154" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="30" font-weight="700" fill="#32CD32">aioncore</text>
+    <text x="500" y="188" font-family="-apple-system,'PingFang SC','Segoe UI','Microsoft YaHei',sans-serif" font-size="20" fill="#F2F4F6">Rust 后端 · 独立仓库</text>
+    <text x="500" y="218" font-family="-apple-system,'PingFang SC','Segoe UI','Microsoft YaHei',sans-serif" font-size="20" fill="#9AA7B2">会话 · Agent 执行 · 通道</text>
+  </g>
+
+  <g id="links-out" stroke="#9AA7B2" stroke-width="1.5" fill="none" opacity="0.5">
+    <path d="M744 180 C 784 180 776 124 806 124"/>
+    <path d="M744 180 H 806"/>
+    <path d="M744 180 C 784 180 776 272 806 272"/>
+  </g>
+
+  <g id="capabilities">
+    <g transform="translate(812 96)">
+      <rect width="324" height="56" rx="10" fill="#12181D"/>
+      <circle cx="26" cy="28" r="5" fill="#32CD32"/>
+      <text x="46" y="35" font-family="-apple-system,'PingFang SC','Segoe UI','Microsoft YaHei',sans-serif" font-size="20" fill="#F2F4F6">20+ CLI Agent · ACP / MCP</text>
+    </g>
+    <g transform="translate(812 170)">
+      <rect width="324" height="56" rx="10" fill="#12181D"/>
+      <circle cx="26" cy="28" r="5" fill="#32CD32"/>
+      <text x="46" y="35" font-family="-apple-system,'PingFang SC','Segoe UI','Microsoft YaHei',sans-serif" font-size="20" fill="#F2F4F6">IM 远程 · Telegram / Lark / 钉钉</text>
+    </g>
+    <g transform="translate(812 244)">
+      <rect width="324" height="56" rx="10" fill="#12181D"/>
+      <circle cx="26" cy="28" r="5" fill="#32CD32"/>
+      <text x="46" y="35" font-family="-apple-system,'PingFang SC','Segoe UI','Microsoft YaHei',sans-serif" font-size="20" fill="#F2F4F6">定时任务 · 存储 · 技能体系</text>
+    </g>
+  </g>
+
+  <text x="600" y="342" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#9AA7B2">业务主体在 aioncore（iOfficeAI/AionCore · 独立 Rust 仓库），本仓库提供三种界面</text>
+</svg>
