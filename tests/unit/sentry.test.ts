@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 AionUi (aionui.com)
+ * Copyright 2025 threetwoa (aionui.com)
  * SPDX-License-Identifier: Apache-2.0
  *
  * Unit tests for the pure helpers exported from `packages/desktop/src/sentry.ts`:
@@ -187,7 +187,7 @@ describe('captureBackendStartupFailure', () => {
         isPackaged: true,
         runtimeKey: 'win32-x64',
         binaryName: 'aioncore.exe',
-        resourcesPath: 'C:\\Users\\alice\\AppData\\Local\\Programs\\AionUi\\resources',
+        resourcesPath: 'C:\\Users\\alice\\AppData\\Local\\Programs\\threetwoa\\resources',
         bundledDirExists: false,
         runtimeDirExists: false,
         resourcesDirEntries: [
@@ -343,7 +343,7 @@ describe('initSentry beforeSend', () => {
         ],
       },
       contexts: {
-        'AionUi.exe': { process_type: 'gpu-process', ptype: 'gpu-process' },
+        'threetwoa.exe': { process_type: 'gpu-process', ptype: 'gpu-process' },
       },
     };
 
@@ -367,7 +367,7 @@ describe('initSentry beforeSend', () => {
     const event = {
       exception: { values: [{ value: 'EXCEPTION_ACCESS_VIOLATION_0x0' }] },
       contexts: {
-        'AionUi.exe': { process_type: 'renderer', ptype: 'renderer' },
+        'threetwoa.exe': { process_type: 'renderer', ptype: 'renderer' },
       },
       tags: { 'event.process': 'renderer' },
     };

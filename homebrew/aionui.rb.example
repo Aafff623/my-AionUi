@@ -1,25 +1,23 @@
 # =============================================================================
 # REFERENCE TEMPLATE ONLY - DO NOT MODIFY
 # =============================================================================
-# This file is a reference template for the Homebrew cask definition.
-# The actual cask is maintained in the official Homebrew repository:
+# This file is a reference template for a Homebrew cask definition for the
+# threetwoa fork. A real cask would live in a tap maintained by the fork
+# owner; upstream AionUi's official cask is maintained separately in:
 #   https://github.com/Homebrew/homebrew-cask/blob/master/Casks/a/aionui.rb
-#
-# Updates are automated via .github/workflows/bump-homebrew.yml which
-# creates PRs to the official repository when a new release is published.
 # =============================================================================
 
-cask "aionui" do
+cask "threetwoa" do
   arch arm: "arm64", intel: "x64"
 
-  version "1.7.1"
-  sha256 arm:   "ec758b0f4727eea1fb13a7ca4176dbf75baab2f3dc135eacbaa8ce091d27d219",
-         intel: "bdb9be0d79f6c7c6c7457f2668dd23ccd0c00a9c7b5a4129960c5d7650190a3a"
+  version "2.2.2"
+  sha256 arm:   "0000000000000000000000000000000000000000000000000000000000000000",
+         intel: "0000000000000000000000000000000000000000000000000000000000000000"
 
-  url "https://github.com/iOfficeAI/AionUi/releases/download/v#{version}/AionUi-#{version}-mac-#{arch}.dmg"
-  name "AionUi"
-  desc "Unified GUI for command-line AI agents"
-  homepage "https://github.com/iOfficeAI/AionUi"
+  url "https://github.com/Aafff623/my-AionUi/releases/download/v#{version}/threetwoa-#{version}-mac-#{arch}.dmg"
+  name "threetwoa"
+  desc "Unified GUI for command-line AI agents (AionUi fork)"
+  homepage "https://github.com/Aafff623/my-AionUi"
 
   livecheck do
     url :url
@@ -29,11 +27,11 @@ cask "aionui" do
   auto_updates true
   depends_on macos: ">= :big_sur"
 
-  app "AionUi.app"
+  app "threetwoa.app"
 
   zap trash: [
-    "~/Library/Application Support/AionUi",
-    "~/Library/Preferences/com.aionui.app.plist",
-    "~/Library/Saved Application State/com.aionui.app.savedState",
+    "~/Library/Application Support/threetwoa",
+    "~/Library/Preferences/com.threetwoa.app.plist",
+    "~/Library/Saved Application State/com.threetwoa.app.savedState",
   ]
 end

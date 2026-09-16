@@ -207,12 +207,12 @@ function getInstallPathKind(resourcesPath: unknown): string | undefined {
   if (!pathValue) return undefined;
 
   const normalized = pathValue.replace(/\//g, '\\').toLowerCase();
-  if (normalized.includes('\\appdata\\local\\programs\\aionui\\resources')) {
+  if (normalized.includes('\\appdata\\local\\programs\\threetwoa\\resources')) {
     return 'user_local_programs';
   }
   if (
-    normalized.includes('\\program files\\aionui\\resources') ||
-    normalized.includes('\\program files (x86)\\aionui\\resources')
+    normalized.includes('\\program files\\threetwoa\\resources') ||
+    normalized.includes('\\program files (x86)\\threetwoa\\resources')
   ) {
     return 'program_files';
   }

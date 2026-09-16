@@ -134,8 +134,9 @@ const makeDeferred = () => {
   return { promise, resolve, reject };
 };
 
-// The check flow is CDN-first: the channel yml is the authoritative source of
-// version + assets, GitHub only enriches release notes. Serve both hosts.
+// The check flow fetches the channel yml from the fork GitHub release
+// (releases/latest/download/<channel>.yml); the GitHub API only enriches
+// release notes. Serve both.
 const CDN_CHANNEL_YML = `version: 1.9.22
 files:
   - url: AionUi-1.9.22-mac-arm64.dmg
@@ -151,7 +152,7 @@ releaseDate: '2026-04-29T00:00:00Z'
 const stubCdnAndGitHubFetch = () => {
   const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
     const url = String(input);
-    if (url.startsWith('https://static.aionui.com/releases/latest')) {
+    if (url.startsWith('https://github.com/') && url.includes('/releases/latest/download/')) {
       return new Response(CDN_CHANNEL_YML, { status: 200 });
     }
     if (url.startsWith('https://api.github.com/')) {
@@ -163,12 +164,12 @@ const stubCdnAndGitHubFetch = () => {
   return fetchMock;
 };
 
-describe('updateBridge CDN URL rewriting', () => {
+describe('updateBridge GitHub asset URL resolution', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('rewrites asset.url to the CDN path and keeps GitHub URL in fallbackUrl', async () => {
+  it('resolves asset.url and fallbackUrl to the fork GitHub release download URLs', async () => {
     const fetchMock = stubCdnAndGitHubFetch();
 
     try {
@@ -182,36 +183,39 @@ describe('updateBridge CDN URL rewriting', () => {
 
       const macAsset = assets.find((a: { name: string }) => a.name === 'AionUi-1.9.22-mac-arm64.dmg');
       expect(macAsset).toBeDefined();
-      expect(macAsset?.url).toBe('https://static.aionui.com/releases/1.9.22/AionUi-1.9.22-mac-arm64.dmg');
+      expect(macAsset?.url).toBe(
+        'https://github.com/iOfficeAI/AionUi/releases/download/v1.9.22/AionUi-1.9.22-mac-arm64.dmg'
+      );
       expect(macAsset?.fallbackUrl).toBe(
         'https://github.com/iOfficeAI/AionUi/releases/download/v1.9.22/AionUi-1.9.22-mac-arm64.dmg'
       );
 
       const linuxAsset = assets.find((a: { name: string }) => a.name === 'AionUi-1.9.22-linux-amd64.deb');
-      expect(linuxAsset?.url).toBe('https://static.aionui.com/releases/1.9.22/AionUi-1.9.22-linux-amd64.deb');
+      expect(linuxAsset?.url).toBe(
+        'https://github.com/iOfficeAI/AionUi/releases/download/v1.9.22/AionUi-1.9.22-linux-amd64.deb'
+      );
       expect(fetchMock).toHaveBeenCalled();
     } finally {
       vi.unstubAllGlobals();
     }
   });
 
-  it('uses the normalized version (no v prefix) in the CDN path', async () => {
+  it('uses the tagged release download path for asset URLs', async () => {
     stubCdnAndGitHubFetch();
 
     try {
       const handler = await getCheckHandler();
       const result = await handler({ repo: 'iOfficeAI/AionUi' });
       const asset = result.data?.latest?.assets?.[0];
-      expect(asset?.url).toMatch(/^https:\/\/static\.aionui\.com\/releases\/1\.9\.22\//);
-      expect(asset?.url).not.toMatch(/\/v1\.9\.22\//);
+      expect(asset?.url).toMatch(/^https:\/\/github\.com\/[^/]+\/[^/]+\/releases\/download\/v1\.9\.22\//);
     } finally {
       vi.unstubAllGlobals();
     }
   });
 });
 
-describe('updateBridge allowlist includes CDN host', () => {
-  it('accepts static.aionui.com URLs for download', async () => {
+describe('updateBridge download host allowlist', () => {
+  it('accepts GitHub release URLs and rejects the removed upstream CDN host', async () => {
     vi.resetModules();
     vi.clearAllMocks();
 
@@ -237,14 +241,20 @@ describe('updateBridge allowlist includes CDN host', () => {
       if (!lastCall) throw new Error('update.download handler not registered');
       const handler = lastCall[0];
 
-      const result = await handler({
+      const githubResult = await handler({
         downloadId: 'manual-download-1',
+        url: 'https://github.com/Aafff623/my-AionUi/releases/download/v1.9.22/threetwoa-1.9.22-mac-arm64.dmg',
+        file_name: 'threetwoa-1.9.22-mac-arm64.dmg',
+      });
+      expect(githubResult.success).toBe(true);
+      expect(githubResult.data?.downloadId).toBe('manual-download-1');
+
+      const cdnResult = await handler({
+        downloadId: 'manual-download-2',
         url: 'https://static.aionui.com/releases/1.9.22/AionUi-1.9.22-mac-arm64.dmg',
         file_name: 'AionUi-1.9.22-mac-arm64.dmg',
       });
-
-      expect(result.success).toBe(true);
-      expect(result.data?.downloadId).toBe('manual-download-1');
+      expect(cdnResult.success).toBe(false);
     } finally {
       vi.unstubAllGlobals();
     }

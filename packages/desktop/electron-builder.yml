@@ -1,12 +1,12 @@
-appId: com.aionui.app
-productName: AionUi
-executableName: AionUi
-copyright: Copyright © 2024 AionUi
+appId: com.threetwoa.app
+productName: threetwoa
+executableName: threetwoa
+copyright: Copyright © 2024 AionUi contributors (Apache-2.0) · fork threetwoa © 2026
 
 protocols:
-  - name: AionUi Protocol
+  - name: threetwoa Protocol
     schemes:
-      - aionui
+      - threetwoa
 
 asar:
   smartUnpack: true
@@ -169,17 +169,17 @@ linux:
   icon: resources/app.png
   artifactName: ${productName}-${version}-${os}-${arch}.${ext}
   category: Utility
-  maintainer: aionui
-  vendor: aionui
+  maintainer: threetwoa
+  vendor: threetwoa
   synopsis: ${description}
   description: ${description}
   desktop:
     entry:
-      Name: AionUi
+      Name: threetwoa
       Comment: ${description}
-      Icon: AionUi
+      Icon: threetwoa
       Categories: Office;Utility;
-      MimeType: x-scheme-handler/aionui;
+      MimeType: x-scheme-handler/threetwoa;
 
 npmRebuild: false
 buildDependenciesFromSource: false
@@ -218,7 +218,7 @@ electronDownload:
 
 publish:
   provider: github
-  owner: iOfficeAI
-  repo: AionUi
+  owner: Aafff623
+  repo: my-AionUi
   publishAutoUpdate: true
   releaseType: release

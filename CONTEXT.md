@@ -7,6 +7,7 @@
 - 本仓库是 `iOfficeAI/AionUi` 的个人 fork（二创基线 `6744099b`，v2.2.2，aioncore v0.2.2），Apache-2.0（无 NOTICE 文件）。
 - 远端：`origin` = 本 fork（唯一 push 目标）；`upstream` = `iOfficeAI/AionUi`（同步源）。
 - 本地克隆为 `--filter=blob:none` 部分克隆：历史/树全量，文件内容懒加载，访问久远历史需联网补拉。
+- **品牌已替换为 threetwoa**（ADR-0003）：产品名/appId `com.threetwoa.app`/深链 `threetwoa://`/数据目录 `~/.threetwoa*`；上游版权头、`AIONUI_*` 环境变量、`@aionui/*` scope、aioncore/aionrs 组件名按许可证与功能性保留。
 
 ## 核心架构事实（已验证）
 
@@ -20,11 +21,12 @@
 
 ## 硬约束
 
-1. **fork 出包前必须处理更新通道**：`packages/desktop/electron-builder.yml` 的 publish 指向 `iOfficeAI/AionUi` 且 `publishAutoUpdate: true`；CDN 备选 `https://static.aionui.com/releases`（`process/services/updateFeed.ts`）。不改编译产物会向上游检查更新。
+1. **更新通道已指向 fork**（ADR-0003 已执行）：electron-builder publish = `Aafff623/my-AionUi`；运行时 feed 走 electron-updater GitHub provider（`process/services/updateFeed.ts`），上游 CDN `static.aionui.com` 已移除——**不得改回上游，否则 fork 安装包会被上游更新覆盖**。
 2. **版本单一来源是根 `package.json`**；`packages/desktop/package.json` 的 `0.0.0` 是故意的，永不修改。升级 aioncore 走 `.claude/skills/bump-version` 流程。
 3. **aioncore 开发依赖 Rust 工具链**：`iOfficeAI/AionCore` 并排 clone + `cargo install --path crates/aionui-app --locked`；开发期不会自动下载后端二进制。
 4. 工具链：Node `>=22 <25` + bun（bun.lock 唯一锁文件）；原生模块（better-sqlite3/node-pty/bcrypt）需 electron rebuild（`bun install` 的 postinstall 会处理）。
 5. `IS_DISCONTINUED_BUILD` 构建旗标保持 false（上游 `-final` tag 专用）。
+6. **rebrand 常态冲突**：同步 upstream 时，品牌面文件（electron-builder.yml、deepLink.ts、数据目录、i18n 品牌词、图标、CI 产物名）会冲突，按 ADR-0003 的替换/保留边界逐项吸收，不许整块还原上游品牌。
 
 ## 常用命令
 
@@ -40,18 +42,18 @@ just push              # 提交前全链路：lint-strict → fmt → typecheck 
 
 ## 词汇表
 
-| 术语 | 含义 |
-|---|---|
-| aioncore | 独立 Rust 后端（`iOfficeAI/AionCore`），版本由根 package.json `aioncoreVersion` 钉住 |
-| aionrs | 内置 agent 引擎类型之一（运行于 aioncore） |
-| ACP | Agent Client Protocol，接入外部 CLI agent 的协议（SDK 在根依赖，协议处理在 aioncore） |
-| MCP | Model Context Protocol；本仓库含内置 browser/imageGen MCP server（`process/resources/builtinMcp/`） |
-| channel | IM 接入（Telegram/DingTalk/Lark/WeCom…），运行时在 aioncore，本仓库只有设置 UI |
-| assistant | 配置层预设（绑定 skills/prompts/engine），区别于 agent 本体 |
-| team | 多 agent 协作模式，事件经 WS 来自 aioncore |
-| extension | 扩展清单 `aion-extension.json`（可贡献 acpAdapters/channels/agents/assistants） |
-| hub | AionHub 扩展资源（构建期从 `iOfficeAI/AionHub` 下载，gitignored） |
-| pet | 桌宠（独立 MPA 页面 + 专属 preload） |
+| 术语      | 含义                                                                                                |
+| --------- | --------------------------------------------------------------------------------------------------- |
+| aioncore  | 独立 Rust 后端（`iOfficeAI/AionCore`），版本由根 package.json `aioncoreVersion` 钉住                |
+| aionrs    | 内置 agent 引擎类型之一（运行于 aioncore）                                                          |
+| ACP       | Agent Client Protocol，接入外部 CLI agent 的协议（SDK 在根依赖，协议处理在 aioncore）               |
+| MCP       | Model Context Protocol；本仓库含内置 browser/imageGen MCP server（`process/resources/builtinMcp/`） |
+| channel   | IM 接入（Telegram/DingTalk/Lark/WeCom…），运行时在 aioncore，本仓库只有设置 UI                      |
+| assistant | 配置层预设（绑定 skills/prompts/engine），区别于 agent 本体                                         |
+| team      | 多 agent 协作模式，事件经 WS 来自 aioncore                                                          |
+| extension | 扩展清单 `aion-extension.json`（可贡献 acpAdapters/channels/agents/assistants）                     |
+| hub       | AionHub 扩展资源（构建期从 `iOfficeAI/AionHub` 下载，gitignored）                                   |
+| pet       | 桌宠（独立 MPA 页面 + 专属 preload）                                                                |
 
 ## 治理边界（fork 特有）
 

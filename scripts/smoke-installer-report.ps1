@@ -44,7 +44,7 @@ if ($status.code -ne 'E1003') {
 if ($status.wrapperCode -ne 'E1002') {
   throw "Expected wrapperCode E1002, got $($status.wrapperCode)"
 }
-if ($status.copyText -notlike '*AionUi installer failure E1003*') {
+if ($status.copyText -notlike '*threetwoa installer failure E1003*') {
   throw 'copyText does not include failure heading'
 }
 if ($status.copyText -notlike '*To AionUi Team*') {

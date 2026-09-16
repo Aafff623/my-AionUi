@@ -80,14 +80,14 @@ const INSTALLER_ERROR_SCENARIOS = [
     defineName: 'AIONUI_E_ARCH_MISMATCH',
     code: 'E1040',
     message: 'Installation package architecture mismatch.',
-    action: 'Download the AionUi installer that matches this Windows architecture, then run it again.',
+    action: 'Download the threetwoa installer that matches this Windows architecture, then run it again.',
     diagnostics: 'scenario=arch-mismatch phase=arch-check target=x64 actual=arm64',
   },
   {
     id: 'active-installer-conflict',
     defineName: 'AIONUI_E_ACTIVE_INSTALLER_CONFLICT',
     code: 'E1050',
-    message: 'Another AionUi installer appears to still be active.',
+    message: 'Another threetwoa installer appears to still be active.',
     action: 'Close the other installer window or wait for it to finish, then run this installer again.',
     diagnostics: 'scenario=active-installer-conflict phase=active-installer-marker state=active',
   },
@@ -520,7 +520,7 @@ function runHarness({ autoDecline, compileOnly, makensis, scenario }) {
         if (status.status !== 'skipped' || status.reason !== 'empty-dsn') {
           throw new Error(`unexpected report status for ${code}: ${JSON.stringify(status)}`);
         }
-        if (typeof status.copyText !== 'string' || !status.copyText.includes(`AionUi installer failure ${code}`)) {
+        if (typeof status.copyText !== 'string' || !status.copyText.includes(`threetwoa installer failure ${code}`)) {
           throw new Error(`report copyText missing support payload for ${code}`);
         }
       }
