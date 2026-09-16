@@ -35,6 +35,11 @@ on:
         required: false
         type: string
         default: ''
+      include_update_metadata:
+        description: 'Keep updater metadata (latest*.yml) and archives in artifacts (needed when publishing a release from a manual build)'
+        required: false
+        type: boolean
+        default: false
 
 env:
   BUN_INSTALL_REGISTRY: 'https://registry.npmjs.org/'
@@ -89,5 +94,5 @@ jobs:
       skip_code_quality: ${{ inputs.skip_code_quality }}
       aioncore_run_id: ${{ inputs.aioncore_run_id }}
       append_commit_hash: true
-      upload_installers_only: true
+      upload_installers_only: ${{ !inputs.include_update_metadata }}
     secrets: inherit
