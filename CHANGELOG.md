@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.2.2-fork.1](https://github.com/Aafff623/my-AionUi/compare/v2.2.2...v2.2.2-fork.1) (2026-09-16)
+
+### Fork
+
+#### Branding
+
+- rebrand fork to threetwoa: identity, update channels, 13-locale i18n, icons, web-cli distribution (ADR-0003)
+
+#### Documentation
+
+- redesign fork readme with project-native SVG visual system and owner-generated cover (ADR-0002)
+- add fork governance baseline: CONTEXT.md and ADR-0001 (blob:none partial clone, add-only policy)
+
+---
+
 ## [2.2.2](https://github.com/iOfficeAI/AionUi/compare/v2.2.1...v2.2.2) (2026-09-09)
 
 ### Desktop
