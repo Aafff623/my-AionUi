@@ -28,6 +28,17 @@
 5. `IS_DISCONTINUED_BUILD` 构建旗标保持 false（上游 `-final` tag 专用）。
 6. **rebrand 常态冲突**：同步 upstream 时，品牌面文件（electron-builder.yml、deepLink.ts、数据目录、i18n 品牌词、图标、CI 产物名）会冲突，按 ADR-0003 的替换/保留边界逐项吸收，不许整块还原上游品牌。
 
+## CI 与出包（fork 实测路径）
+
+- fork 的 Actions 可调度（2026-09-16 首次实跑）。仓库当前**无任何 secrets / 仓库变量**。
+- **实测①（冒烟构建，run 35056715581）**：`build-manual` windows-x64 + `skip_code_quality` → **成功**，产物 `windows-build-x64-c3a40da`（170MB NSIS 安装器，Actions artifact 保留 7 天），全程约 9 分钟，零 secrets——fork 打包链（含 rebrand 后的产物名）可用。
+- **实测②（质量门，run 35057357104）**：`format:check` 曾失败于 `docs/adr/0003`（`*` 未转义，已修并经 oxfmt@0.41.0 全仓复验 0 违规）；ESLint 仅 warning 不失败；tsc/vitest 因前置失败未执行——本机依赖修复后 `tsc --noEmit` **0 错**，预期 CI 可通过（待 push 后复验）。
+- **发布总开关 `vars.PUBLISH_RELEASE`**（`.github/workflows/build-and-release.yml`）：未设置时 tag 推送只生成**纯源码 draft release**、跳过构建；设为 `true` 才启用六平台构建并发布带安装包的 release（upstream 为"下游签名构建"预留的开关）。
+- **手动出包入口**：`build-manual.yml`（workflow_dispatch，绕开 PUBLISH_RELEASE 开关，可 `skip_code_quality`）；产物只上传安装器到 Actions artifacts，**不含 `latest*.yml`**、不动 Releases。
+- **构建脚本永远 `--publish=never`**（`scripts/build-with-builder.js:785`）：electron-builder 不会隐式发布；Release 与 `latest*.yml` 由 `build-and-release` 的 release job（download-artifact + `scripts/prepare-release-assets.sh` + action-gh-release）生成，channel 清单 version 取 package.json（版本规则见 ADR-0004）。
+- **secrets 依赖**：linux-x64 构建硬校验 `SENTRY_AUTH_TOKEN/SENTRY_ORG/SENTRY_PROJECT`（缺失即失败）；macOS 无证书时降级 unsigned 构建；`GH_TOKEN`(PAT) 缺省回退 `GITHUB_TOKEN`。Windows / macOS 可零 secrets 出**未签名**包。
+- ⚠️ 当前 release（v2.2.2-fork.1）为纯源码、无 channel 文件 → **更新检查链路暂时 404**（方向安全、功能不可用）；首次带产物 release 上线即闭环。
+
 ## 常用命令
 
 ```bash
@@ -39,6 +50,10 @@ bun run webui          # 无 Electron WebUI 模式（dev 端口 25809）
 just preflight         # 环境体检
 just push              # 提交前全链路：lint-strict → fmt → typecheck → i18n-check → test → push
 ```
+
+> 本机 node_modules 曾处于残缺状态（`.bin` 为空、`@icon-park/react` 等 16 个包装配失败），表现为 `bun run` 系列 command not found、`tsc` 报数百个"找不到模块"。2026-09-16 以 `bun install --frozen-lockfile` 修复（未动 bun.lock）：`.bin` 链接恢复、`tsc --noEmit` **0 错**。遇到同类症状先重跑安装，不要当成代码问题。
+>
+> 全量 `bun run test` 本机实测（修复后两次）：约 4974/4985 过，挂点两类——① `tests/unit/common/imageGenCore.test.ts` 3 个 symlink 用例（Windows 无权限，必然挂）；② 1~3 个全量并行负载下的偶发（`tests/unit/previews/*.dom.test.tsx` 模块加载、`tests/unit/releasePackagingConfig.test.ts` 的 bash 用例——隔离复跑全过）。CI（ubuntu）预期全绿，symlink 与偶发项均不构成发布阻塞。
 
 ## 词汇表
 
