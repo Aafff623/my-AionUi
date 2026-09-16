@@ -30,8 +30,9 @@
 
 ## CI 与出包（fork 实测路径）
 
-- ⚠️ **push / tag 推送不触发任何 workflow**（2026-09-16 实测：推 `v2.2.2-fork.2` tag 后零 run；Actions 页无 fork 禁用横幅、workflow 均 active、`gh workflow enable` 无效）——**出包目前只能走 `build-manual.yml` 手动派发**（workflow_dispatch 正常）。tag 自动发布链待排查（怀疑与本机推送凭据/事件投递有关）。
-- **已验证的出包路径（Windows）**：`build-manual.yml`（`include_update_metadata=true`）→ 下载 artifacts → `gh release create` 手工挂载。首个产物版本 **v2.2.2-fork.2**：`threetwoa-2.2.2-win-x64.exe`（未签名）+ `latest.yml`；更新通道 URL（`releases/latest/download/latest.yml`）实测 **200，闭环**；质量门在该 run 中 CI 全绿（含 tsc/vitest，ubuntu）。
+- ⚠️ **push / tag 推送不触发任何 workflow**（2026-09-16 实测：推 tag 后零 run；Actions 页无 fork 禁用横幅、workflow 均 active、`gh workflow enable` 无效）——**出包目前只能走 `build-manual.yml` 手动派发**（workflow_dispatch 正常）。tag 自动发布链待排查（怀疑与本机推送凭据/事件投递有关）。
+- **已验证的出包路径（Windows）**：`build-manual.yml`（`include_update_metadata=true`）→ 下载 artifacts → `gh release create` 手工挂载。首个产物版本 **v2.2.2-threetwoa.2**：`threetwoa-2.2.2-win-x64.exe`（未签名）+ `latest.yml`；更新通道 URL（`releases/latest/download/latest.yml`）实测 **200，闭环**；质量门在该 run 中 CI 全绿（含 tsc/vitest，ubuntu）。
+- **发布与命名**：tag / 标题用 `vX.Y.Z-threetwoa.N`（上游版本 + 品牌 + 同基线序号，见 ADR-0004；首批 `-fork.N` 已于 2026-09-16 改名）；release 正文按热门项目惯例组织：下载表 → 亮点 → 修复与改进 → 基线 → Full Changelog（中文，标题中英对照）。
 - **上游设计的自动链**（`build-and-release.yml`，tag 触发）：仓库变量 `PUBLISH_RELEASE=true` 已设置；因触发问题未走通。恢复后六平台构建 + release job（softprops）自动创建 release。
 - **构建脚本永远 `--publish=never`**（`scripts/build-with-builder.js:785`）：electron-builder 不会隐式发布；产物要么走 `build-and-release` 的 release job，要么手工 `gh release create`。
 - **secrets 依赖**：仓库当前无任何 secrets；linux-x64 有 Sentry 守卫（无 token 自动跳过，不再硬失败）；macOS 无证书降级 unsigned；零 secrets 下 Windows 已验证可出包。

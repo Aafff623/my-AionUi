@@ -12,11 +12,11 @@ fork 已发布首个 release `v2.2.2-fork.1`（纯源码，package.json 版本�
 
 semver 规则下，`2.2.2-fork.1` 是 `2.2.2` 的 prerelease，排序**小于** `2.2.2`。因此：若未来把 `x.y.z-fork.N` 后缀写进 package.json，channel 清单的 version 会恒不大于已装版本，**更新永远不会被推送**；`app.getVersion()` 也会带上 prerelease 后缀，影响所有基于 semver 的比较与展示。
 
-fork 采用 `vX.Y.Z-fork.N` 格式的 tag 是为了避免与 upstream 同名 tag 冲突（已发布的惯例），tag 名本身不参与任何版本比较——冲突点在"tag 名是否等于 package.json 版本"这一隐含假设上。
+fork 采用「上游版本 + 自家标识 + 序号」格式的 tag（先例 `v2.2.2-fork.N`，2026-09-16 起统一为品牌式 `vX.Y.Z-threetwoa.N`）是为了避免与 upstream 同名 tag 冲突（已发布的惯例），tag 名本身不参与任何版本比较——冲突点在"tag 名是否等于 package.json 版本"这一隐含假设上。
 
 ## 决策
 
-1. **tag 名与 package.json 版本解耦**：tag 继续用 `vX.Y.Z-fork.N` 风格（`N` 为同基线内的 fork 发布序号），仅作发布标识；**任何自动化逻辑不得读取 tag 名参与版本比较**。
+1. **tag 名与 package.json 版本解耦**：tag 用 `vX.Y.Z-threetwoa.N` 风格（`X.Y.Z` 为上游基线版本，`N` 为同基线内的发布序号；首批 `-fork.N` 命名已于 2026-09-16 统一为此格式），仅作发布标识；**任何自动化逻辑不得读取 tag 名参与版本比较**。
 2. **纯源码 release**（无构建产物，如 `v2.2.2-fork.1`）：package.json 版本保持与上游基线一致，**不 bump**。
 3. **含构建产物的 release**（产出安装包与 `latest*.yml`）：package.json 必须 bump 为**严格大于当前已分发版本**的普通 semver（三段式、无 prerelease 后缀），例如 `2.2.3`；该值即 channel 清单的 `version`（`scripts/prepare-release-assets.sh:120` 取证）。**禁止**把 `-fork.N`、`-dev.N` 等后缀写进 package.json。
 4. 若将来需要并行的 fork 预发布通道，走 electron-builder channel 机制（`latest-<channel>.yml` + `allowPrerelease`），而不是 semver prerelease 后缀——当前不启用，仅作演进方向记录。
